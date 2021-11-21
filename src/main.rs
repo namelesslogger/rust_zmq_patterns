@@ -20,5 +20,6 @@ fn main() {
         reply::run();
     } else {
         request::run();
+        println!("what")
     }
 }
