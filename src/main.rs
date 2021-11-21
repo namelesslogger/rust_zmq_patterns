@@ -1,8 +1,8 @@
 extern crate clap;
 mod request;
+mod reply;
 mod utils;
 
-use request::run;
 use clap::{Arg, App};
 
 fn main() {
@@ -16,5 +16,9 @@ fn main() {
             .help("Sets process to act as server or client"))
         .get_matches();
     
-    run(matches.occurrences_of("server") > 0);
+    if matches.occurrences_of("server") > 0 {
+        reply::run();
+    } else {
+        request::run();
+    }
 }
