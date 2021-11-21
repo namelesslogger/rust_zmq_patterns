@@ -1,7 +1,8 @@
 extern crate clap;
 mod request;
 mod utils;
-use request::{ReqClient, RepClient};
+
+use request::run;
 use clap::{Arg, App};
 
 fn main() {
@@ -14,15 +15,6 @@ fn main() {
             .long("server")
             .help("Sets process to act as server or client"))
         .get_matches();
-    let server = matches.occurrences_of("server") > 0 ;
-
-    if server {
-        println!("Starting server process");
-        let rep_client: RepClient = RepClient::new();
-        rep_client.reply("I got a Messsage!!! Heres the response");
-    } else {
-        println!("Starting client process");
-        let req_client: ReqClient = ReqClient::new();
-        req_client.request("Ohhhh a request!!!");
-    }
+    
+    run(matches.occurrences_of("server") > 0);
 }
