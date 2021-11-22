@@ -9,7 +9,7 @@ pub fn bind_socket(s_type: zmq::SocketType, endpoint: &str) -> Result<zmq::Socke
     match create_socket(s_type) {
         Ok(s) => match s.bind(endpoint) {
             Ok(_) => Ok(s),
-            Err(err) => Err(err)
+            Err(err) => Err(err) 
         },
         Err(err) => Err(err)
     }

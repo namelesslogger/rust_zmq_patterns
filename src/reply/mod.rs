@@ -8,7 +8,7 @@ struct RepClient {
 impl RepClient {
     fn new() -> RepClient {
         RepClient {
-            socket: bind_socket(zmq::SocketType::REP, "tcp://*:5559").unwrap(),
+            socket: bind_socket(zmq::SocketType::REP, "tcp://*:5559").expect("Failed to bind Reply socket type to"),
             timeout: 2000
         }
     }
@@ -22,9 +22,9 @@ impl RepClient {
                     match i {
                         0 => {continue;} // nothing in the socket
                         _ => {
-                            self.socket.recv(&mut message_buffer, 0).unwrap();
+                            self.socket.recv(&mut message_buffer, 0).expect("Failed to read message into buffer");
                             println!("Request from client: {:?}", message_buffer.as_str().unwrap());
-                            self.socket.send(message, 0).unwrap();
+                            self.socket.send(message, 0).expect("Sending message to req client failed");
                         }
                     }
                 }
