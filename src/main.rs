@@ -5,22 +5,11 @@ mod subscribe;
 mod publish;
 mod utils;
 
-use clap::{Arg, App};
+use clap::{App, load_yaml};
 
 fn main() {
-    let matches = App::new("Zmq Test bed")
-        .version("0.1")
-        .author("Shane M <johnshanie@protonmail.com>")
-        .about("I do things")
-        .arg(Arg::with_name("arch")
-            .short("a")
-            .long("arch")
-            .help("determines if the architure is pubsub or request reply"))
-        .arg(Arg::with_name("server")
-            .short("s")
-            .long("server")
-            .help("Sets process to act as server or client"))
-        .get_matches();
+    let yaml = load_yaml!("architecture.yaml");
+    let matches = App::from(yaml).get_matches();
     
     if matches.occurrences_of("server") > 0 {
         if matches.occurrences_of("arch") > 0 {

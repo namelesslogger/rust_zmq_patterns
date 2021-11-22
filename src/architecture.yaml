@@ -1,11 +1,13 @@
-pattern: pub-sub
-  server:
-    type: publisher
-    port: 5556
-    host: *
-    duplicates: 1
-  client:
-    type: subscriber
-    port: 5556
-    host: localhost
-    duplicates: 10
+name: Zmq Test bed
+version: "0.1"
+author: Shane M. <johnshanie@protonmail.com>
+about: Does things
+args:
+    - arch:
+        short: a
+        long: arch
+        help: determines if the architure is pubsub or request reply
+    - server:
+        short: s
+        long: server
+        help: Sets process to act as server or client
