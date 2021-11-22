@@ -1,10 +1,7 @@
 extern crate clap;
-mod request;
-mod reply;
-mod subscribe;
-mod publish;
 mod utils;
-
+mod sockets;
+use sockets::{publish, reply, request, subscribe};
 use clap::{App, load_yaml};
 
 fn main() {

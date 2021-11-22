@@ -22,12 +22,14 @@ impl SubClient {
 
     fn consume_subscription(&self) {
         let mut message_buffer: zmq::Message = zmq::Message::new();
-       
+
         loop {
             match self.socket.poll(zmq::POLLIN, self.timeout) {
                 Ok(i) => {
                     match i {
-                        0 => {println!("Got nuthin")} // nothing in the socket
+                        0 => { // nothing in the socket
+                            break;
+                        }
                         _ => {
                             self.socket.recv(&mut message_buffer, 0).expect("Failed to read message into buffer");
                             let published_message = message_buffer.as_str().unwrap();
