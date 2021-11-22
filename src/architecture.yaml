@@ -1,0 +1,11 @@
+pattern: pub-sub
+  server:
+    type: publisher
+    port: 5556
+    host: *
+    duplicates: 1
+  client:
+    type: subscriber
+    port: 5556
+    host: localhost
+    duplicates: 10
