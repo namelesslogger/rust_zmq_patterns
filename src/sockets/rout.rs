@@ -7,7 +7,7 @@ struct RouterClient {
 impl RouterClient {
     fn new() -> RouterClient {
         RouterClient {
-            socket: bind_socket(zmq::SocketType::DEALER, "tcp://*:5559").expect("failed to bind DEALER client")
+            socket: bind_socket(zmq::SocketType::DEALER, "tcp://*:5559").expect("failed to bind ROUTER client")
         }
     }
 }

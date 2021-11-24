@@ -1,0 +1,4 @@
+name: Majordomo
+description: Does things with REQ/REP sockets
+sockets: 
+  

@@ -1,0 +1,18 @@
+description: "Does things with REQ/REP sockets"
+name: "Request Reply"
+sockets: 
+  - 
+    REP: 
+      duplication: 1
+      host: "*"
+      port: 5556
+      protocol: tcp
+      type: REP
+  - 
+    REQ: 
+      duplication: 2
+      host: localhost
+      port: 5556
+      protocol: tcp
+      type: REQ
+threadcount: 3
