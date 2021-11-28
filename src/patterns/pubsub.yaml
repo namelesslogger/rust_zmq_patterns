@@ -11,7 +11,7 @@ sockets:
       type: PUB
   - 
     SUB: 
-      duplication: 2
+      duplication: 10
       host: localhost
       port: 5556
       protocol: tcp
