@@ -31,7 +31,4 @@ pub fn run() {
     println!("Starting publiisher process process");
     let pub_client: PubClient = PubClient::new();
     pub_client.publish_data("this is a random message being sent 100 times");
-    
-    // why do I need this...
-    std::process::exit(0);
 }

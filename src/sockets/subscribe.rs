@@ -54,7 +54,4 @@ pub fn run() {
     let sub_client: SubClient = SubClient::new();
     sub_client.subscribe();
     sub_client.consume_subscription();
-    
-    // why do I need this...
-    std::process::exit(0);
 }

@@ -1,35 +1,11 @@
 extern crate clap;
 mod utils;
 mod sockets;
-use sockets::{publish, reply, request, subscribe, rout, deal};
+use sockets::{publish, reply, request, subscribe};
 use clap::{App, load_yaml};
 use std::str::FromStr;
 use std::thread;
 
-
-fn generate_publisher_socket() {
-    thread::spawn(|| {
-        publish::run();
-    });
-}
-
-fn generate_subscribe_socket() {
-    thread::spawn(|| {
-        subscribe::run();
-    });
-}
-
-fn generate_reply_socket() {
-    thread::spawn(|| {
-        reply::run();
-    });
-}
-
-fn generate_request_socket() {
-    thread::spawn(|| {
-        request::run();
-    });
-}
 
 enum SupportedSockets {
     PUB,
@@ -57,6 +33,7 @@ fn main() {
     let yaml = load_yaml!("cli.yaml");
     let _matches = App::from(yaml).get_matches();
     let pattern = load_yaml!("patterns/pubsub.yaml");
+    let mut children: Vec<std::thread::JoinHandle<()>> = Vec::new();
 
     for socket in pattern["sockets"].as_vec().unwrap() {
         let socket_description = socket.as_hash().unwrap().iter().next().unwrap();
@@ -64,11 +41,32 @@ fn main() {
         //let socket_definition = socket_description.1;
 
         let socket_type = SupportedSockets::from_str(socket_type.as_str().unwrap()).expect("Unsupported socket type in schema definition, ignoring.");
-        match socket_type {
-            SupportedSockets::PUB => generate_publisher_socket(),
-            SupportedSockets::SUB => generate_subscribe_socket(),
-            SupportedSockets::REP => generate_reply_socket(),
-            SupportedSockets::REQ => generate_request_socket(),
-        }
+        let thread_spawned = match socket_type {
+            SupportedSockets::PUB => {
+                thread::spawn(|| {
+                    publish::run();
+                })
+            },
+            SupportedSockets::SUB =>  {
+                thread::spawn(|| {
+                    subscribe::run();
+                })
+            },
+            SupportedSockets::REP => {
+                thread::spawn(|| {
+                    reply::run();
+                })
+            },
+            SupportedSockets::REQ => {
+                thread::spawn(|| {
+                    request::run();
+                })
+            }
+        };
+        children.push(thread_spawned);
+    }
+
+    for child in children {
+        let _ = child.join();
     }
 }
