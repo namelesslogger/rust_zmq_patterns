@@ -1,4 +1,5 @@
 use crate::utils::connect_socket;
+use text_io::read;
 
 struct ReqClient {
     socket: zmq::Socket,
@@ -38,10 +39,14 @@ impl ReqClient {
 }
 
 pub fn run() {
-    println!("Starting client process");
     let req_client: ReqClient = ReqClient::new();
-    req_client.request("Ohhhh a request!!!");
-    
+    loop {
+        let message: String = read!("{}\n");
+        req_client.request(&message);
+        if message == "END" {
+            break;
+        }
+    }
     // why do I need this...
     std::process::exit(0);
 }

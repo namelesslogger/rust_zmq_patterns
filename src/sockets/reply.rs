@@ -13,7 +13,7 @@ impl RepClient {
         }
     }
 
-    fn reply(&self, message: &str) {
+    fn reply(&self) {
         let mut message_buffer: zmq::Message = zmq::Message::new();
         
         loop {
@@ -23,8 +23,9 @@ impl RepClient {
                         0 => {continue;} // nothing in the socket
                         _ => {
                             self.socket.recv(&mut message_buffer, 0).expect("Failed to read message into buffer");
-                            println!("Request from client: {:?}", message_buffer.as_str().unwrap());
-                            self.socket.send(message, 0).expect("Sending message to req client failed");
+                            println!("Performing some task for workers:");
+                            let message: String = self.perform_task();
+                            self.socket.send(&message, 0).expect("Sending message to req client failed");
                         }
                     }
                 }
@@ -34,12 +35,16 @@ impl RepClient {
             }
         }
     }
+
+    fn perform_task(&self) -> String {
+        "task_result".to_string()
+    }
 }
 
 pub fn run() {
     println!("Starting server process");
     let rep_client: RepClient = RepClient::new();
-    rep_client.reply("Ohhhh a request!!!");
+    rep_client.reply();
 
     // why do I need this...
     std::process::exit(0);

@@ -32,7 +32,7 @@ impl FromStr for SupportedSockets {
 fn main() {
     let yaml = load_yaml!("cli.yaml");
     let _matches = App::from(yaml).get_matches();
-    let pattern = load_yaml!("patterns/pubsub.yaml");
+    let pattern = load_yaml!("patterns/reqrep.yaml");
     let mut children: Vec<std::thread::JoinHandle<()>> = Vec::new();
 
     for socket in pattern["sockets"].as_vec().unwrap() {
