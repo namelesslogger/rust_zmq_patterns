@@ -17,21 +17,15 @@ impl RepClient {
         let mut message_buffer: zmq::Message = zmq::Message::new();
         
         loop {
-            match self.socket.poll(zmq::POLLIN, self.timeout) {
-                Ok(i) => {
-                    match i {
-                        0 => {continue;} // nothing in the socket
-                        _ => {
-                            self.socket.recv(&mut message_buffer, 0).expect("Failed to read message into buffer");
-                            println!("Performing some task for workers:");
-                            let message: String = self.perform_task();
-                            self.socket.send(&message, 0).expect("Sending message to req client failed");
-                        }
+            match self.socket.poll(zmq::POLLIN, self.timeout).expect("Failed to poll socket") {
+                    0 => {continue;} // nothing in the socket
+                    _ => {
+                        self.socket.recv(&mut message_buffer, 0).expect("Failed to read message into buffer");
+                        println!("Performing some task for workers:");
+                        let message: String = self.perform_task();
+                        self.socket.send(&message, 0).expect("Sending message to req client failed");
                     }
                 }
-                Err(_) => {
-                    println!("Nothin to do, passing on")
-                } 
             }
         }
     }
