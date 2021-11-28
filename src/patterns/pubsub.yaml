@@ -11,10 +11,10 @@ sockets:
       type: PUB
   - 
     SUB: 
-      duplication: 10
+      duplication: 4
       host: localhost
       port: 5556
       protocol: tcp
       topics: ""
       type: SUB
-threadcount: 3
+threadcount: 5

@@ -24,26 +24,19 @@ impl SubClient {
         let mut message_buffer: zmq::Message = zmq::Message::new();
 
         loop {
-            match self.socket.poll(zmq::POLLIN, self.timeout) {
-                Ok(i) => {
-                    match i {
-                        0 => { // nothing in the socket
-                            break;
-                        }
-                        _ => {
-                            self.socket.recv(&mut message_buffer, 0).expect("Failed to read message into buffer");
-                            let published_message = message_buffer.as_str().unwrap();
-                            if published_message == "END" {
-                                break;
-                            }
-                            println!("Request recieved! {:?}", published_message);
-                            
-                        }
-                    }
+            match self.socket.poll(zmq::POLLIN, self.timeout).expect("Failed to poll socket") {
+                0 => {
+                    //TODO add some concept of liveness here
                 }
-                Err(_) => {
-                    println!("Nothin to do, passing on")
-                } 
+                _ => {
+                    self.socket.recv(&mut message_buffer, 0).expect("Failed to read message into buffer");
+                    let published_message = message_buffer.as_str().unwrap();
+                    if published_message == "END" {
+                        break;
+                    }
+                    println!("Request recieved! {:?}", published_message);
+                    
+                }
             }
         }
     }

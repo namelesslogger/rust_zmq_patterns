@@ -7,5 +7,6 @@ edition = "2018"
 
 [dependencies]
 zmq = "0.9"
+text_io = "0.1.9"
 clap = { version = "2.33.3", features = ["yaml"] }
 serde_yaml = "0.8"

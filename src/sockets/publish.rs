@@ -1,5 +1,6 @@
 use crate::utils::bind_socket;
 use std::{thread, time};
+use text_io::read;
 
 struct PubClient {
     socket: zmq::Socket
@@ -13,13 +14,7 @@ impl PubClient {
     }
 
     fn publish_data(&self, message: &str) {
-        for _ in 0..30 {
-            self.socket.send(message, 0).expect("Failed to send any data");
-            println!("Sent some messafes out to anyone listening");
-            thread::sleep(time::Duration::from_secs(1));
-        }
-
-        self.terminate_subscribers();
+        self.socket.send(message, 0).expect("Failed to send any data");
     }
 
     fn terminate_subscribers(&self) {
@@ -28,7 +23,13 @@ impl PubClient {
 }
 
 pub fn run() {
-    println!("Starting publiisher process process");
     let pub_client: PubClient = PubClient::new();
-    pub_client.publish_data("this is a random message being sent 100 times");
+    loop {
+        let message: String = read!("{}\n");
+        if message == "END" {
+            pub_client.terminate_subscribers();
+            break;
+        }
+        pub_client.publish_data(&message);
+    }
 }

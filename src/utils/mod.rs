@@ -1,3 +1,4 @@
+pub mod constants;
 use zmq;
 
 fn create_socket(s_type: zmq::SocketType) -> Result<zmq::Socket, zmq::Error> {
