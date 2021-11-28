@@ -18,21 +18,13 @@ impl ReqClient {
         let mut message_buffer: zmq::Message = zmq::Message::new();
         self.socket.send(message, 0).expect("Sending message to rep client failed");
 
-        match self.socket.poll(zmq::POLLIN, self.timeout) {
-            Ok(i) => {
-                //  can only be 0 (nothing) or 1 at the point
-                match i {
-                    0 => {
-                        println!("Server is being awful quiet...");
-                    },
-                    _ => {
-                        self.socket.recv(&mut message_buffer, 0).expect("Failed to read message into buffer");
-                        println!("Reply from server: {:?}", message_buffer.as_str().unwrap());
-                    }
-                }
+        match self.socket.poll(zmq::POLLIN, self.timeout).expect("Failed to poll socket") {
+            0 => {
+                println!("Server is being awful quiet...");
             },
-            Err(_) => {
-                println!("What in the hell happened during polling!")
+            _ => {
+                self.socket.recv(&mut message_buffer, 0).expect("Failed to read message into buffer");
+                println!("Reply from server: {:?}", message_buffer.as_str().unwrap());
             }
         }
     }
