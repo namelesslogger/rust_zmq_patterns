@@ -14,9 +14,9 @@ impl RepClient {
     }
 
     fn reply(&self) {
-        let mut message_buffer: zmq::Message = zmq::Message::new();
         
         loop {
+            let mut message_buffer: zmq::Message = zmq::Message::new();
             match self.socket.poll(zmq::POLLIN, self.timeout).expect("Failed to poll socket") {
                 0 => {continue;} // nothing in the socket
                 _ => {

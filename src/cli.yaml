@@ -3,11 +3,8 @@ version: "0.1"
 author: Shane M. <johnshanie@protonmail.com>
 about: Does things
 args:
-    - arch:
-        short: a
-        long: arch
-        help: determines if the architure is pubsub or request reply
-    - server:
-        short: s
-        long: server
-        help: Sets process to act as server or client
+    - config:
+        short: c
+        long: config
+        value_name: FILE
+        takes_value: true

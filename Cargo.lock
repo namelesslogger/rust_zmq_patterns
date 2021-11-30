@@ -254,5 +254,6 @@ dependencies = [
  "clap",
  "serde_yaml",
  "text_io",
+ "yaml-rust 0.4.5",
  "zmq",
 ]
