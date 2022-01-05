@@ -8,7 +8,7 @@ sockets:
       port: 5556
       protocol: tcp
       topics: ""
-      type: PUB
+      socket_type: PUB
   - 
     SUB: 
       duplication: 4
@@ -16,5 +16,5 @@ sockets:
       port: 5556
       protocol: tcp
       topics: ""
-      type: SUB
+      socket_type: SUB
 threadcount: 5

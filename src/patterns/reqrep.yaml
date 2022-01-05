@@ -7,12 +7,12 @@ sockets:
       host: "*"
       port: 5556
       protocol: tcp
-      type: REP
+      socket_type: REP
   - 
     REQ: 
       duplication: 2
       host: localhost
       port: 5556
       protocol: tcp
-      type: REQ
+      socket_type: REQ
 threadcount: 3
