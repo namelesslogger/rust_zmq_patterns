@@ -1,4 +1,28 @@
 name: Majordomo
 description: Does things with REQ/REP sockets
 sockets: 
-  
+  - 
+    ROUT: 
+      duplication: 1
+      host: "*"
+      port: 5556
+      protocol: tcp
+      topics: ""
+      socket_type: ROUT
+  - 
+    DEAL_CLIENT: 
+      duplication: 4
+      host: localhost
+      port: 5556
+      protocol: tcp
+      topics: ""
+      socket_type: DEAL
+  - 
+    DEAL_WORKER: 
+      duplication: 4
+      host: localhost
+      port: 5556
+      protocol: tcp
+      topics: ""
+      socket_type: DEAL
+threadcount: 9
