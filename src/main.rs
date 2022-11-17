@@ -37,10 +37,7 @@ impl FromStr for SupportedSockets {
 
 struct SocketConfig {
     duplication: i64,
-    host: String,
     port: i64,
-    protocol: String,
-    topics: String,
     socket_type: String,
 }
 
@@ -50,12 +47,9 @@ impl SocketConfig {
             duplication: socket_definition["duplication"]
                 .as_i64()
                 .expect("Invalid Integer value, should fit into i64 datatype"),
-            host: socket_definition["host"].as_str().unwrap().to_string(),
             port: socket_definition["port"]
                 .as_i64()
                 .expect("Invalid Integer value, should fit into i64 datatype"),
-            protocol: socket_definition["protocol"].as_str().unwrap().to_string(),
-            topics: socket_definition["topics"].as_str().unwrap().to_string(),
             socket_type: socket_definition["socket_type"]
                 .as_str()
                 .unwrap()
@@ -75,8 +69,7 @@ fn load_file(file: &str) -> Vec<yaml_rust::Yaml> {
 }
 
 fn run(config_file: &str) {
-    let config_file_path: String = format!("src/patterns/{}.yaml", config_file);
-    let pattern = load_file(&config_file_path)
+    let pattern = load_file(&config_file)
         .into_iter()
         .next()
         .expect("No config in file?");
