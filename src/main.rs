@@ -1,15 +1,14 @@
 extern crate clap;
 extern crate yaml_rust;
-mod utils;
 mod sockets;
-use sockets::{publish, reply, request, subscribe, rout, deal};
-use clap::{App, load_yaml};
+mod utils;
+use clap::{load_yaml, App};
+use sockets::{deal, publish, reply, request, rout, subscribe};
 use std::fs::File;
+use std::io::Read;
 use std::str::FromStr;
 use std::thread;
-use yaml_rust::{YamlLoader};
-use std::io::Read;
-
+use yaml_rust::YamlLoader;
 
 enum SupportedSockets {
     PUB,
@@ -21,7 +20,6 @@ enum SupportedSockets {
 }
 
 impl FromStr for SupportedSockets {
-
     type Err = ();
 
     fn from_str(input: &str) -> Result<SupportedSockets, Self::Err> {
@@ -29,10 +27,10 @@ impl FromStr for SupportedSockets {
             "PUB" => Ok(SupportedSockets::PUB),
             "SUB" => Ok(SupportedSockets::SUB),
             "REP" => Ok(SupportedSockets::REP),
-            "REQ" => Ok(SupportedSockets::REQ),            
+            "REQ" => Ok(SupportedSockets::REQ),
             "DEAL" => Ok(SupportedSockets::DEAL),
             "ROUT" => Ok(SupportedSockets::ROUT),
-            _      => Err(()),
+            _ => Err(()),
         }
     }
 }
@@ -43,23 +41,30 @@ struct SocketConfig {
     port: i64,
     protocol: String,
     topics: String,
-    socket_type: String
+    socket_type: String,
 }
 
 impl SocketConfig {
     fn new(socket_definition: &yaml_rust::Yaml) -> SocketConfig {
         SocketConfig {
-            duplication: socket_definition["duplication"].as_i64().expect("Invalid Integer value, should fit into i64 datatype"),
+            duplication: socket_definition["duplication"]
+                .as_i64()
+                .expect("Invalid Integer value, should fit into i64 datatype"),
             host: socket_definition["host"].as_str().unwrap().to_string(),
-            port: socket_definition["port"].as_i64().expect("Invalid Integer value, should fit into i64 datatype"),
+            port: socket_definition["port"]
+                .as_i64()
+                .expect("Invalid Integer value, should fit into i64 datatype"),
             protocol: socket_definition["protocol"].as_str().unwrap().to_string(),
             topics: socket_definition["topics"].as_str().unwrap().to_string(),
-            socket_type: socket_definition["socket_type"].as_str().unwrap().to_string()
+            socket_type: socket_definition["socket_type"]
+                .as_str()
+                .unwrap()
+                .to_string(),
         }
     }
 }
 
-fn load_file(file: &str) -> Vec<yaml_rust::Yaml>{
+fn load_file(file: &str) -> Vec<yaml_rust::Yaml> {
     let mut file = File::open(file).expect("Unable to open file");
     let mut contents = String::new();
 
@@ -69,14 +74,13 @@ fn load_file(file: &str) -> Vec<yaml_rust::Yaml>{
     YamlLoader::load_from_str(&contents).unwrap()
 }
 
-
 fn run(config_file: &str) {
     let config_file_path: String = format!("src/patterns/{}.yaml", config_file);
     let pattern = load_file(&config_file_path)
-                    .into_iter()
-                    .next()
-                    .expect("No config in file?");
-    
+        .into_iter()
+        .next()
+        .expect("No config in file?");
+
     let mut children: Vec<std::thread::JoinHandle<()>> = Vec::new();
 
     for socket in pattern["sockets"].as_vec().unwrap() {
@@ -85,38 +89,27 @@ fn run(config_file: &str) {
         let socket_config: SocketConfig = SocketConfig::new(&socket_definition);
 
         for _ in 0..socket_config.duplication {
-            let socket_type = SupportedSockets::from_str(&socket_config.socket_type).expect("Unsupported socket type in schema definition, ignoring.");
+            let socket_type = SupportedSockets::from_str(&socket_config.socket_type)
+                .expect("Unsupported socket type in schema definition, ignoring.");
             let thread_spawned = match socket_type {
-                SupportedSockets::PUB => {
-                    thread::spawn(|| {
-                        publish::run();
-                    })
-                },
-                SupportedSockets::SUB =>  {
-                    thread::spawn(|| {
-                        subscribe::run();
-                    })
-                },
-                SupportedSockets::REP => {
-                    thread::spawn(|| {
-                        reply::run();
-                    })
-                },
-                SupportedSockets::REQ => {
-                    thread::spawn(|| {
-                        request::run();
-                    })
-                },
-                SupportedSockets::DEAL => {
-                    thread::spawn(|| {
-                        deal::run();
-                    })
-                },
-                SupportedSockets::ROUT => {
-                    thread::spawn(|| {
-                        rout::run();
-                    })
-                }
+                SupportedSockets::PUB => thread::spawn(|| {
+                    publish::run();
+                }),
+                SupportedSockets::SUB => thread::spawn(|| {
+                    subscribe::run();
+                }),
+                SupportedSockets::REP => thread::spawn(|| {
+                    reply::run();
+                }),
+                SupportedSockets::REQ => thread::spawn(|| {
+                    request::run();
+                }),
+                SupportedSockets::DEAL => thread::spawn(|| {
+                    deal::run();
+                }),
+                SupportedSockets::ROUT => thread::spawn(|| {
+                    rout::run();
+                }),
             };
             children.push(thread_spawned);
         }
